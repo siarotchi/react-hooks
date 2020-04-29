@@ -1,36 +1,28 @@
-import React, { useEffect, useContext, useRef, useState, useCallback } from "react";
+import React, { useContext, useRef, useState, useCallback, useImperativeHandle, forwardRef } from "react";
 import { TodoContext } from "../context/TodoProvider";
 
-const Form = ({ setTaskIsBeingEdited, cleanEdit }) => {
+const Form = ({ calcHeight }, ref) => {
   const inputRef = useRef(null);
   const { addTask } = useContext(TodoContext);
   const [value, setValue] = useState("");
+
   const onChange = useCallback(({ target: { value } }) => setValue(value), []);
   const onSubmit = (e) => {
-    // e.preventDefault();
+    e.preventDefault();
     handleAddTask(e);
     inputRef.current.focus();
   };
 
-  const updateNewTitle = (title) => {
-    setValue(title);
-  };
+  useImperativeHandle(ref, () => ({
+    getHeight: () => {
+      return inputRef.current.offsetParent.clientHeight;
+    },
+  }));
 
-  useEffect(() => {
-    if (setTaskIsBeingEdited) updateNewTitle(setTaskIsBeingEdited.title);
-  }, [setTaskIsBeingEdited]);
-
-  const handleAddTask = (e) => {
-    e.preventDefault();
+  const handleAddTask = () => {
     addTask(value);
+    calcHeight();
     setValue("");
-  };
-
-  const onCancelEdit = (e) => {
-    e.preventDefault();
-    addTask(setTaskIsBeingEdited.title);
-    setValue("");
-    cleanEdit();
   };
 
   return (
@@ -46,13 +38,8 @@ const Form = ({ setTaskIsBeingEdited, cleanEdit }) => {
       <button type="submit" className="btn btn-danger text-capitalize">
         Add
       </button>
-      {setTaskIsBeingEdited && (
-        <button onClick={onCancelEdit} className="btn btn-danger text-capitalize">
-          Cancel
-        </button>
-      )}
     </form>
   );
 };
 
-export default Form;
+export default forwardRef(Form);

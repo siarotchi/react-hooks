@@ -1,27 +1,25 @@
 import React, { useReducer, createContext, useCallback } from "react";
 import reducer from "../reducers/todoReducer";
 import { useBg, getFromStorage, useLocalStorage } from "../customHooks";
+import ToDo from "../pages/ToDo";
 
 export const TodoContext = createContext({});
 
 const initialState = {
   tasks: getFromStorage("tasks"),
   tasksCount: 0,
-  setTaskIsBeingEdited: false,
 };
 
-const TodoProvider = (props) => {
+const TodoProvider = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { tasks, value, tasksCount, setTaskIsBeingEdited } = state;
+  const { tasks, tasksCount } = state;
   const [color] = useBg(tasks);
-
-  console.log(tasks);
 
   useLocalStorage("tasks", tasks);
 
   const addTask = (taskContent) => {
     if (!taskContent) return null;
-    dispatch({ type: "ADD_TASKS", payload: taskContent });
+    dispatch({ type: "ADD_TASK", payload: taskContent });
   };
 
   const doneTask = (id) => {
@@ -36,16 +34,9 @@ const TodoProvider = (props) => {
     dispatch({ type: "CLEAR_ALL" });
   }, []);
 
-  const cleanEdit = useCallback(() => {
-    dispatch({ type: "CLEAN_EDIT" });
+  const editTask = useCallback((payload) => {
+    dispatch({ type: "EDIT_TASK", payload });
   }, []);
-
-  const editTask = (id) => {
-    dispatch({
-      type: "EDIT_TASK",
-      payload: id,
-    });
-  };
 
   return (
     <TodoContext.Provider
@@ -54,15 +45,13 @@ const TodoProvider = (props) => {
         addTask,
         doneTask,
         deleteTask,
-        clearAll,
-        cleanEdit,
         editTask,
+        clearAll,
         color,
         tasksCount,
-        setTaskIsBeingEdited,
       }}
     >
-      {props.children}
+      <ToDo />
     </TodoContext.Provider>
   );
 };

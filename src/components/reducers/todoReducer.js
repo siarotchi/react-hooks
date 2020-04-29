@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from "uuid";
 
 const reducer = (state, { type, payload }) => {
   const handlers = {
-    ADD_TASKS: () => ({
+    ADD_TASK: () => ({
       ...state,
       tasks: [...state.tasks, { id: uuidv4(), title: payload, done: false }],
       tasksCount: state.tasks.length + 1,
@@ -21,18 +21,13 @@ const reducer = (state, { type, payload }) => {
       tasks: [],
       tasksCount: 0,
     }),
-    CLEAN_EDIT: (state) => ({
+    EDIT_TASK: () => ({
       ...state,
-      setTaskIsBeingEdited: false,
+      tasks: state.tasks.map((task) => {
+        if (task.id === payload.id) task.title = payload.title;
+        return task;
+      }),
     }),
-    EDIT_TASK: (state, id) => {
-      const editedTask = state.tasks.find((task) => task.id === id);
-      return {
-        ...state,
-        tasks: state.tasks.filter((task) => task.id !== id),
-        setTaskIsBeingEdited: editedTask,
-      };
-    },
   };
   if (type) {
     return handlers[type](state, payload) || state;

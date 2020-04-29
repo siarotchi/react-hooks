@@ -15,3 +15,16 @@ export const ActionBtn = ({ task, doneTask, deleteTask }) => {
     </div>
   );
 };
+
+export const EditActionsBtn = ({ onCancel, onSubmit }) => {
+  return (
+    <div className="action-btn">
+      <button onClick={onSubmit} type="button" className="btn btn-outline-success btn-lg m-1">
+        &#10003;
+      </button>
+      <button onClick={onCancel} type="button" className="btn btn-outline-danger btn-lg">
+        &#10006;
+      </button>
+    </div>
+  );
+};

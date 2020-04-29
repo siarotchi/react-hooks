@@ -1,23 +1,12 @@
-import React, { useMemo, useContext } from "react";
+import React, { useMemo, useContext, useRef, useState } from "react";
 import Form from "../ToDo/Form";
 import Notes from "../ToDo/Notes";
-import TodoProvider from "../context/TodoProvider";
 import { TodoContext } from "../context/TodoProvider";
 
 const ToDo = () => {
-  const {
-    tasks = [],
-    doneTask,
-    color,
-    deleteTask,
-    editTask,
-    cleanEdit,
-    clearAll,
-    tasksCount,
-    setTaskIsBeingEdited,
-  } = useContext(TodoContext);
-
-  console.log(tasks);
+  const { tasks = [], doneTask, color, deleteTask, editTask, clearAll, tasksCount } = useContext(TodoContext);
+  const inputRef = useRef();
+  const [containerHeight, setContainerHeight] = useState(300);
 
   const renderedTasksFcReducer = useMemo(
     () =>
@@ -33,20 +22,23 @@ const ToDo = () => {
     [tasks]
   );
 
+  const calcHeight = () => {
+    setContainerHeight(inputRef.current.getHeight());
+  };
+
   return (
-    <TodoProvider>
-      <div className="todo-container" style={{ backgroundColor: color }}>
-        <hr />
-        <h1 className="todo-header d-flex justify-content-center">ToDo List: {tasksCount} tasks to do.</h1>
-        <Form setTaskIsBeingEdited={setTaskIsBeingEdited} cleanEdit={cleanEdit} />
-        <hr />
-        {renderedTasksFcReducer}
-        <hr />
-        <button onClick={clearAll} type="button" className="btn btn-primary btn-block text-capitalize ">
-          clear all
-        </button>
-      </div>
-    </TodoProvider>
+    <div className="todo-container" style={{ backgroundColor: color }}>
+      <h3 className="todo-header">ToDo Height: {containerHeight}</h3>
+      <hr />
+      <h1 className="todo-header d-flex justify-content-center">ToDo List: {tasksCount} tasks to do.</h1>
+      <Form ref={inputRef} calcHeight={calcHeight} />
+      <hr />
+      {renderedTasksFcReducer}
+      <hr />
+      <button onClick={clearAll} type="button" className="btn btn-primary btn-block text-capitalize ">
+        clear all
+      </button>
+    </div>
   );
 };
 
