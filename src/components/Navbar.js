@@ -11,7 +11,7 @@ export const Navbar = () => (
           ToDo
         </NavLink>
       </li>
-      <li className="nav-item">
+      {/* <li className="nav-item">
         <NavLink className="nav-link" to="/some">
           some
         </NavLink>
@@ -20,7 +20,7 @@ export const Navbar = () => (
         <NavLink className="nav-link" to="/else">
           else
         </NavLink>
-      </li>
+      </li> */}
     </ul>
   </nav>
 );

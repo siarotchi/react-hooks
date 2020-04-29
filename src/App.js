@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { Navbar } from "./components/Navbar";
-import ToDo from "./components/pages/ToDo";
+import TodoProvider from "./components/context/TodoProvider";
 
 function App() {
   return (
@@ -9,7 +9,7 @@ function App() {
       <Navbar />
       <div className="container pt-4">
         <Switch>
-          <Route path={"/todo"} exact component={ToDo} />
+          <Route path={"/todo"} exact component={TodoProvider} />
         </Switch>
       </div>
     </BrowserRouter>
